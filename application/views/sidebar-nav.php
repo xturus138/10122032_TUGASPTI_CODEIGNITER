@@ -3,6 +3,7 @@
 
 <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.0/css/ionicons.min.css" rel="stylesheet">
 </head>
 
 <body>
