@@ -25,16 +25,19 @@
  * @version    1.8.0, 2014-03-02
  */
 
+// Define PHPEXCEL_ROOT constant
+if (!defined('PHPEXCEL_ROOT')) {
+    define('PHPEXCEL_ROOT', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+}
+
 PHPExcel_Autoloader::Register();
-//    As we always try to run the autoloader before anything else, we can use it to do a few
-//        simple checks and initialisations
-//PHPExcel_Shared_ZipStreamWrapper::register();
-// check mbstring.func_overload
+
+// Check mbstring.func_overload
 if (ini_get('mbstring.func_overload') & 2) {
     throw new PHPExcel_Exception('Multibyte function overloading in PHP must be disabled for string functions (2).');
 }
-PHPExcel_Shared_String::buildCharacterSets();
 
+PHPExcel_Shared_String::buildCharacterSets();
 
 /**
  * PHPExcel_Autoloader
@@ -49,37 +52,39 @@ class PHPExcel_Autoloader
      * Register the Autoloader with SPL
      *
      */
-    public static function Register() {
+    public static function Register()
+    {
         if (function_exists('__autoload')) {
             //    Register any existing autoloader function with SPL, so we don't get any clashes
             spl_autoload_register('__autoload');
         }
         //    Register ourselves with SPL
         return spl_autoload_register(array('PHPExcel_Autoloader', 'Load'));
-    }   //    function Register()
-
+    }
 
     /**
      * Autoload a class identified by name
      *
      * @param    string    $pClassName        Name of the object to load
      */
-    public static function Load($pClassName){
-        if ((class_exists($pClassName,FALSE)) || (strpos($pClassName, 'PHPExcel') !== 0)) {
-            //    Either already loaded, or not a PHPExcel class request
+    public static function Load($pClassName)
+    {
+        if ((class_exists($pClassName, FALSE)) || (strpos($pClassName, 'PHPExcel') !== 0)) {
+            // Either already loaded, or not a PHPExcel class request
             return FALSE;
         }
 
-        $pClassFilePath = PHPEXCEL_ROOT .
-                          str_replace('_',DIRECTORY_SEPARATOR,$pClassName) .
-                          '.php';
+        // Generate the path for the class
+        $pClassFilePath = PHPEXCEL_ROOT . str_replace('_', DIRECTORY_SEPARATOR, $pClassName) . '.php';
 
+        // Check if the class file exists and is readable
         if ((file_exists($pClassFilePath) === FALSE) || (is_readable($pClassFilePath) === FALSE)) {
-            //    Can't load
+            // Can't load the class
             return FALSE;
         }
 
         require($pClassFilePath);
-    }   //    function Load()
+    }
+
 
 }
